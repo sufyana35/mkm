@@ -10,9 +10,13 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-ADD . /var/www
-RUN chown -R www-data:www-data /var/www
-
 CMD composer install ; php-fpm
+
+RUN addgroup -g 1000 -S www && \
+    adduser -u 1000 -S www -G www
+
+USER www
+
+COPY --chown=www-data:www-data . /var/www
 
 EXPOSE 9000
