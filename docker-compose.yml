@@ -9,11 +9,16 @@ services:
       MYSQL_ROOT_USER: ${DB_USERNAME}
     ports:
       - "${DB_PORT}:3306"
+    volumes:
+      - ./database/files:/var/lib/mysql
+    command: --pid-file /var/lib/mysql/mysqld.pid
 
   php-fpm:
     build:
       context: ./.docker/php
       dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=mysql://${DB_USER}:${DB_PASSWORD}@database:3306/${DB_NAME}
     volumes:
       - ./:/var/www
     ports:
